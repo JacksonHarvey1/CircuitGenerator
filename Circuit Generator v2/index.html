@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Boolean Circuit Diagram Generator</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+</head>
+
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+#circuit {
+    margin-top: 20px;
+}
+
+.gate {
+    display: inline-block;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+.input {
+    font-weight: bold;
+}
+
+.not {
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    padding-bottom: 0;
+}
+
+.and {
+    background-color: lightgreen;
+}
+
+.or {
+    background-color: lightsalmon;
+}
+</style>
+<body>
+    <h1>Boolean Circuit Diagram Generator</h1>
+    <div>
+        <label for="equation">Enter a boolean equation:</label>
+        <input type="text" id="equation" placeholder="Example: a'*b+c">
+    </div>
+    <button id="generateButton">Generate Circuit</button>
+    <svg id="circuit" width="800" height="400"></svg>
+    <script src="functions.js"></script>
+</body>
+</html>

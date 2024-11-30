@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Gate_Generator:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Gate_Generator_jar</output-path>
+    <root id="archive" name="Gate_Generator.jar">
+      <element id="module-output" name="Gate_Generator" />
+    </root>
+  </artifact>
+</component>
