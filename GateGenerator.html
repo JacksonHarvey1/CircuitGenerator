@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boolean Equation Parser</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+            
+        #canvas {
+            margin-top: 20px;
+            display: block;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="gates.js"></script>
+    
+    <label for="equation">Boolean Equation:</label>
+    <input type="text" id="equation" value="A + B * (C + D)">
+    <button onclick="parseAndPrintGates()">Parse and Print Gates</button>
+    <br>
+    <canvas id="canvas" width="700" height="900"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const VERTICAL_GATE_SPACING = 100;
+        const HORIZONTAL_GATE_SPACING = 100;
+        let singleLetterOperandsCounter = 0;
+        let gates = [];
+
+        function parseAndPrintGates() {
+            clearCanvas();
+            const equation = document.getElementById('equation').value;
+            const operators = [];
+            const operands = [];
+
+            for (const c of equation) {
+                if (c === '(') {
+                    operators.push(c);
+                } else if (c === ')') {
+                    while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+                        buildGate(operators.pop(), operands);
+                    }
+                    operators.pop();
+                } else if (c === ' ') {
+                    continue;
+                } else if ((c >= 'A' && c <= 'Z')) {
+                    operands.push(c);
+                } else if (c === '+' || c === '*') {
+                    while (operators.length > 0 && precedence(c) <= precedence(operators[operators.length - 1])) {
+                        buildGate(operators.pop(), operands);
+                    }
+                    operators.push(c);
+                }
+            }
+
+            while (operators.length > 0) {
+                buildGate(operators.pop(), operands);
+            }
+
+            connectLines(gates);
+        }
+
+        function buildGate(operator, operands) {
+    const operand2 = operands.pop();
+    const operand1 = operands.pop();
+    const gateType = (operator === '+') ? 'OR_GATE' : 'AND_GATE';
+
+    // Determine the column and spacing based on the number of gates with 1-letter operands
+    let verticalSpacing = 0;
+    let horizontalSpacing = 0;
+
+    if (operand1.length === 1 && operand2.length === 1) {
+        
+        // For single-letter operands, use zero horizontal spacing
+        verticalSpacing = (singleLetterOperandsCounter++) * VERTICAL_GATE_SPACING;
+        horizontalSpacing = 0;
+    }
+    const matchingGate = gates.find(previousGate => previousGate.booleanOut === operand1 || previousGate.booleanOut === operand2);
+
+if (matchingGate) {
+    verticalSpacing = matchingGate.verticalSpacing;
+    horizontalSpacing = matchingGate.horizontalSpacing + HORIZONTAL_GATE_SPACING;
+}
+const newGate = { gateType, operand1, operand2, horizontalSpacing, verticalSpacing, booleanOut: getNextGateLabel(gateType, operand1, operand2) };
+            gates.push(newGate);
+
+            // Use the print functions based on gate type
+            if (gateType === "OR_GATE") {
+                printOrGate(50 + horizontalSpacing, 750 - verticalSpacing, operand1, operand2);
+            } else {
+                printAndGate(50 + horizontalSpacing, 750 - verticalSpacing, operand1, operand2);
+            }
+
+            operands.push(getNextGateLabel(gateType, operand1, operand2));
+        }
+
+        function getNextGateLabel(gateType, Operand1, Operand2) {
+            return (gateType === "OR_GATE") ? Operand1 + "+" + Operand2 : Operand1 + "*" + Operand2;
+        }
+
+        function precedence(operator) {
+            return (operator === '+') ? 1 : (operator === '*') ? 2 : 0;
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            gates = [];
+            singleLetterOperandsCounter = 0;
+        }
+    </script>
+</body>
+
+</html>

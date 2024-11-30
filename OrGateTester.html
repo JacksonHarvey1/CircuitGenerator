@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OR Gate Drawing</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #canvas {
+            margin-top: 20px;
+            display: block;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="500" height="500"></canvas>
+    <br>
+    <label for="xValue">X Value:</label>
+    <input type="number" id="xValue" value="150">
+    <br>
+    <label for="yValue">Y Value:</label>
+    <input type="number" id="yValue" value="100">
+    <br>
+    <label for="input1">Input 1:</label>
+    <input type="text" id="input1" value="A">
+    <br>
+    <label for="input2">Input 2:</label>
+    <input type="text" id="input2" value="B">
+    <br>
+    <button onclick="drawOrGate()">Draw OR Gate</button>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        function drawOrGate() {
+            const x = parseInt(document.getElementById('xValue').value);
+            const y = parseInt(document.getElementById('yValue').value);
+            const input1 = document.getElementById('input1').value;
+            const input2 = document.getElementById('input2').value;
+            drawOrGateFunction(x, y, input1, input2);
+        }
+
+        function drawOrGateFunction(x, y, input1, input2) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            printOrGate(x, y, input1, input2);
+        }
+
+        function printOrGate(x, y, input1, input2) {
+            const radius = 20;
+            const endAngle = Math.PI * 0.5;
+            const startAngle = Math.PI * 1.5;
+
+            // Draw OR gate shape
+            ctx.beginPath();
+            ctx.arc(x - radius * 0.5, canvas.height - y, radius, startAngle, endAngle, false); // Adjusting y-coordinate
+            ctx.lineTo(x + radius * 0.5, canvas.height - (y - radius));  // Bottom of the second arc
+            ctx.arc(x + radius * 0.5, canvas.height - y, radius, endAngle, startAngle, true); // Adjusting y-coordinate
+            ctx.lineTo(x - radius * 0.5, canvas.height - (y + radius));  // Top of the second arc
+            ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+            ctx.closePath();  // Close the path before fill
+            ctx.fill();
+            ctx.stroke();
+
+            // Draw input lines
+            ctx.beginPath();
+            const inputLineY1 = canvas.height - (y + radius*0.5);
+            const inputLineY2 = canvas.height - (y - radius*0.5);
+            ctx.moveTo(x - radius * 0.5 - 7 , inputLineY1);
+            ctx.lineTo(x - radius * 0.5 + 17, inputLineY1);
+            ctx.moveTo(x - radius * 0.5 - 7, inputLineY2);
+            ctx.lineTo(x - radius * 0.5 + 17, inputLineY2);
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
+            ctx.stroke();
+
+            // Draw input labels slightly higher and lower
+            ctx.font = '12px Arial';
+            ctx.fillStyle = 'black';
+            ctx.fillText(input1, x - radius * 0.5 - 20, inputLineY1 - 6);
+            ctx.fillText(input2, x - radius * 0.5 - 20, inputLineY2 + 16);
+
+            // Draw output line
+            ctx.beginPath();
+            const outputLineX = x + radius + 30;
+            const outputLineY = canvas.height - y;
+            ctx.moveTo(x + radius*1.5, outputLineY);
+            ctx.lineTo(outputLineX, outputLineY);
+            ctx.stroke();
+
+            // Display text for the output line
+            const outputText = `${input1}+${input2}`;
+            ctx.font = '12px Arial';
+            ctx.fillStyle = 'black';
+            ctx.fillText(outputText, outputLineX, outputLineY - 10);
+        }
+    </script>
+</body>
+</html>
